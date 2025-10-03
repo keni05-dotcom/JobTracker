@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>📋 Job Tracker</h1>
+            <p>Track your job applications and manage your career journey</p>
+        </header>
+
+        <!-- Search and Controls -->
+        <div class="controls">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search by job title or company..." />
+                <button id="searchBtn">🔍</button>
+            </div>
+            <div class="action-buttons">
+                <button id="addJobBtn" class="btn-primary">+ Add New Job</button>
+                <button id="exportBtn" class="btn-secondary">📊 Export CSV</button>
+            </div>
+        </div>
+
+        <!-- Job Form Modal -->
+        <div id="jobModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Add New Job</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="jobForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="jobTitle">Job Title *</label>
+                            <input type="text" id="jobTitle" name="jobTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company *</label>
+                            <input type="text" id="company" name="company" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="platform">Platform</label>
+                            <select id="platform" name="platform">
+                                <option value="">Select Platform</option>
+                                <option value="LinkedIn">LinkedIn</option>
+                                <option value="Indeed">Indeed</option>
+                                <option value="JobStreet">JobStreet</option>
+                                <option value="Glassdoor">Glassdoor</option>
+                                <option value="Company Website">Company Website</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status *</label>
+                            <select id="status" name="status" required>
+                                <option value="Applied">Applied</option>
+                                <option value="Interview">Interview</option>
+                                <option value="Offer">Offer</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expectedSalary">Expected Salary</label>
+                            <input type="number" id="expectedSalary" name="expectedSalary" placeholder="e.g., 75000">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactPerson">Contact Person</label>
+                            <input type="text" id="contactPerson" name="contactPerson" placeholder="HR Manager, Recruiter, etc.">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dateApplied">Date Applied *</label>
+                            <input type="date" id="dateApplied" name="dateApplied" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="jobUrl">Job URL</label>
+                            <input type="url" id="jobUrl" name="jobUrl" placeholder="https://...">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="cancelBtn" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Job</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Jobs Table -->
+        <div class="table-container">
+            <table id="jobsTable">
+                <thead>
+                    <tr>
+                        <th data-sort="jobTitle">Job Title <span class="sort-arrow">↕</span></th>
+                        <th data-sort="company">Company <span class="sort-arrow">↕</span></th>
+                        <th data-sort="platform">Platform <span class="sort-arrow">↕</span></th>
+                        <th data-sort="expectedSalary">Expected Salary <span class="sort-arrow">↕</span></th>
+                        <th data-sort="status">Status <span class="sort-arrow">↕</span></th>
+                        <th>Contact Person</th>
+                        <th data-sort="dateApplied">Date Applied <span class="sort-arrow">↕</span></th>
+                        <th>Job URL</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="jobsTableBody">
+                    <!-- Jobs will be dynamically inserted here -->
+                </tbody>
+            </table>
+            <div id="noJobsMessage" class="no-jobs">
+                <p>No jobs found. Add your first job application to get started!</p>
+            </div>
+        </div>
+
+        <!-- Bookmarklet Instructions -->
+        <div class="bookmarklet-section">
+            <h3>🔖 Bookmarklet Integration</h3>
+            <p>Drag the button below to your bookmarks bar to quickly add jobs from any job posting page:</p>
+            <a href="javascript:(function(){var title=document.title.replace(/[|\s]*-\s*(LinkedIn|Indeed|JobStreet|Glassdoor).*/,'').trim();var company='';var url=window.location.href;if(window.location.hostname.includes('linkedin.com')){var companyEl=document.querySelector('.job-details-jobs-unified-top-card__company-name a, .job-details-jobs-unified-top-card__company-name, .jobs-unified-top-card__company-name a');if(companyEl)company=companyEl.textContent.trim();}else if(window.location.hostname.includes('indeed.com')){var companyEl=document.querySelector('[data-testid="company-name"] a, .companyName a, .companyName');if(companyEl)company=companyEl.textContent.trim();}else if(window.location.hostname.includes('jobstreet.com')){var companyEl=document.querySelector('[data-automation="job-detail-header-company-name"] a, .job-detail-header-company-name a');if(companyEl)company=companyEl.textContent.trim();}else if(window.location.hostname.includes('glassdoor.com')){var companyEl=document.querySelector('.job-details-header__company-name a, .job-details-header__company-name');if(companyEl)company=companyEl.textContent.trim();}else{var meta=document.querySelector('meta[property="og:site_name"]');if(meta)company=meta.content;}var params=new URLSearchParams();params.set('title',encodeURIComponent(title));params.set('company',encodeURIComponent(company));params.set('url',encodeURIComponent(url));window.open('index.html?'+params.toString(),'_blank');})();" class="bookmarklet-btn">📋 Add to Job Tracker</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
